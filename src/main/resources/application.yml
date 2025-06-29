@@ -1,0 +1,53 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: email
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+  
+  
+  application:
+    name: epsy-backend
+
+  # Database Configuration
+  datasource:
+    url: db_url
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+#    hikari:
+#      connection-timeout: 20000
+#      maximum-pool-size: 10
+#      minimum-idle: 5
+#      idle-timeout: 300000
+#      pool-name: EpsyHikariCP
+
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  # Logging Configuration for SQL
+  logging:
+    level:
+      org.hibernate.SQL: DEBUG
+      org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+application:
+  security:
+    jwt:
+      secret-key: jwt_secret
+      expiration: 86400000 # a day

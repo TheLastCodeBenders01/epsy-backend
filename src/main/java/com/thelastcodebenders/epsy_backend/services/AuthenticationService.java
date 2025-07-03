@@ -5,6 +5,7 @@ import com.thelastcodebenders.epsy_backend.models.dto.ApiResponse;
 import com.thelastcodebenders.epsy_backend.models.dto.AuthRequest;
 import com.thelastcodebenders.epsy_backend.models.dto.AuthResponse;
 import com.thelastcodebenders.epsy_backend.models.dto.RegisterRequest;
+import com.thelastcodebenders.epsy_backend.models.entities.Cart;
 import com.thelastcodebenders.epsy_backend.models.entities.User;
 import com.thelastcodebenders.epsy_backend.models.types.OtpPurpose;
 import com.thelastcodebenders.epsy_backend.models.types.Role;
@@ -29,6 +30,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final OtpService otpService;
     private final ObjectMapper objectMapper;
+    private final CartService cartService;
 
     @Transactional
     public ApiResponse<AuthResponse> register(RegisterRequest request) {
@@ -55,6 +57,13 @@ public class AuthenticationService {
                 user.setTelegramUsername(request.getTelegramUsername());
                 user.setVendorCategories(objectMapper.writeValueAsString(request.getVendorCategories()));
             }
+
+            // build cart
+            Cart cart = Cart.builder()
+                    .userId(user.getUserId())
+                    .build();
+
+            cartService.saveCart(cart);
 
             userRepository.save(user);
 

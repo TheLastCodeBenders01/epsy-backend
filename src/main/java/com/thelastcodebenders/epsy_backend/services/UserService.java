@@ -1,5 +1,6 @@
 package com.thelastcodebenders.epsy_backend.services;
 
+import com.thelastcodebenders.epsy_backend.exceptions.UserNotFoundException;
 import com.thelastcodebenders.epsy_backend.models.dto.ApiResponse;
 import com.thelastcodebenders.epsy_backend.models.dto.VendorResponse;
 import com.thelastcodebenders.epsy_backend.models.entities.User;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -32,5 +34,9 @@ public class UserService {
         List<User> user = userRepository.findAllByIsVendorTrueAndVendorCategoriesContainingIgnoreCaseAndEmailVerifiedTrue(category.name());
         return ApiResponse.success("successfully got vendors",
                 user.parallelStream().map(User::toVendorResponse).toList());
+    }
+
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 }

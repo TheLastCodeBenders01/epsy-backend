@@ -2,6 +2,7 @@ package com.thelastcodebenders.epsy_backend.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thelastcodebenders.epsy_backend.exceptions.ProductNotFoundException;
 import com.thelastcodebenders.epsy_backend.models.dto.ApiResponse;
 import com.thelastcodebenders.epsy_backend.models.dto.PaginatedRequest;
 import com.thelastcodebenders.epsy_backend.models.dto.PaginatedResponse;
@@ -70,5 +71,9 @@ public class ProductService {
         return ApiResponse.success("got all vendor products", productRepository.findAllByOwnerId(vendorId).parallelStream().map(
                 product -> product.toDto(productImageService.findAllByProductId(product.getProductId()))
         ).toList());
+    }
+
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
     }
 }

@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Builder
 @Data
 @Entity
+@ToString(callSuper = true)
 @Table(name = "cart_products")
 public class CartProduct extends AuditableEntity {
     @Id
@@ -27,7 +29,11 @@ public class CartProduct extends AuditableEntity {
     private long cartProductId;
 
     private long productId;
-    private UUID orderId;
+    private UUID cartId;
+
+    // extra details
+    private String productName;
+    private String vendorName;
 
     private int quantity;
     private double pricePerUnit;

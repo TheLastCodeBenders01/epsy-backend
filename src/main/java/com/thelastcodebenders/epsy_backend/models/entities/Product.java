@@ -1,5 +1,6 @@
 package com.thelastcodebenders.epsy_backend.models.entities;
 
+import com.thelastcodebenders.epsy_backend.models.dto.ProductResponse;
 import com.thelastcodebenders.epsy_backend.models.types.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +13,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.util.List;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,6 +24,7 @@ import java.util.UUID;
 @Builder
 @Data
 @Entity
+@ToString
 @Table(name = "products")
 public class Product extends AuditableEntity {
     @Id
@@ -29,7 +33,6 @@ public class Product extends AuditableEntity {
 
     private String name;
     private String description;
-    private String imageUrl;
     private double price;
     private String categories; // list of categories as a comma-separated string
 
@@ -37,6 +40,19 @@ public class Product extends AuditableEntity {
     @Builder.Default private int quantity = 1;
 
     private UUID ownerId;
+
+    public ProductResponse toDto(List<ProductImage> productImages) {
+        return ProductResponse.builder()
+                .productId(productId)
+                .name(name)
+                .description(description)
+                .price(price)
+                .categories(categories)
+                .quantity(quantity)
+                .ownerId(ownerId)
+                .productImages(productImages)
+                .build();
+    }
 }
 
 // productId, categories, name, description, imageUrl, price, quantity, ownerId, createdAt, updatedAt,

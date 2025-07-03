@@ -1,5 +1,6 @@
 package com.thelastcodebenders.epsy_backend.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thelastcodebenders.epsy_backend.models.dto.ApiResponse;
 import com.thelastcodebenders.epsy_backend.models.dto.AuthRequest;
 import com.thelastcodebenders.epsy_backend.models.dto.AuthResponse;
@@ -27,6 +28,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final OtpService otpService;
+    private final ObjectMapper objectMapper;
 
     @Transactional
     public ApiResponse<AuthResponse> register(RegisterRequest request) {
@@ -42,11 +44,17 @@ public class AuthenticationService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .location(request.getLocation())
-                    .isVendor(request.isVendor())
-                    .vendorCategory(request.getVendorCategory())
+                    .isVendor(request.getIsVendor())
+                    .imageUrl(request.getImageUrl())
                     .emailVerified(false) // Set email as not verified
-                    .role(request.isVendor() ? Role.VENDOR : Role.USER)
+                    .role(request.getIsVendor() ? Role.VENDOR : Role.USER)
                     .build();
+
+            if (request.getIsVendor()) {
+                user.setDisplayName(request.getDisplayName());
+                user.setTelegramUsername(request.getTelegramUsername());
+                user.setVendorCategories(objectMapper.writeValueAsString(request.getVendorCategories()));
+            }
 
             userRepository.save(user);
 
